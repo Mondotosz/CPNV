@@ -18,3 +18,13 @@ Business Logic | backend | dll
 ## Project 1
 
 Create ClassLibrary
+
+-   New solution
+-   ClassLibrary
+-   .net 5
+
+Create UI
+
+- Add new project to solution
+- Console project named HelloWorldCLI
+- Add reference to HelloWorld namespace to HelloWorldCLI
