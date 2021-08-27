@@ -25,6 +25,31 @@ Create ClassLibrary
 
 Create UI
 
-- Add new project to solution
-- Console project named HelloWorldCLI
-- Add reference to HelloWorld namespace to HelloWorldCLI
+-   Add new project to solution
+-   Console project named HelloWorldCLI
+-   Add reference to HelloWorld namespace to HelloWorldCLI
+
+## Abstract data Type
+
+```cs
+class Color {
+    byte red;
+    byte green;
+    byte blue;
+
+    public Color(byte red, byte green, byte blue){
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+    }
+}
+
+Color color = new Color(255,0,0);
+
+
+void printColor(Color color)
+{
+    Console.WriteLine("#%x%x%x", color.red, color.green, color.blue);
+}
+
+```
