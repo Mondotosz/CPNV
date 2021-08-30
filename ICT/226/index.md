@@ -15,7 +15,7 @@ Business Logic | backend | dll
 
 .Net 5
 
-## Project 1
+## Creating a c# project
 
 Create ClassLibrary
 
