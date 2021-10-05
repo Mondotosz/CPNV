@@ -60,7 +60,7 @@
 5. Le principe d'un container est qu'il ressemble à une VM vu de l'intérieur, mais qu'il est un ensemble de processus vus de l'extérieur. L'extérieur ici, c'est la machine hôte Debian. Placez vous dans votre second terminal (celui de l'hôte). Quel est le namespace id de votre container ? Vérifiez que vous voyez tous les processus de votre container en les listant également dans le container avec la commande top.
 6. De la même manière, un container obtient des interfaces réseaux qui sont privées, et séparées de la machine hôte.
     - Listez les interfaces réseaux de votre container. Quelle est l'adresse IP de votre container ?
-      - `docker inspect -f '{{json .NetworkSettings.Networks}}' 741d84b91210`
+      - `docker inspect -f '{{json .NetworkSettings.Networks}}' 741d84b91210`   
       - `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 741d84b91210` => `172.17.0.2`
     - Docker assigne une adresse privée à chaque container et lui donne accès au reste de l'internet au travers d'une passerelle qui est l'interface virtuelle docker de l'hôte. Trouvez la passerelle par défaut de votre container avec la commande route ou netstat -r. Vérifiez que c'est bien une des interfaces de la machine hôte Debian (quel est son nom ?).
       Nous allons maintenant arrêter notre container. Il suffit de faire un exit dans le container ou un docker stop ubuntu depuis l'hôte debian.
