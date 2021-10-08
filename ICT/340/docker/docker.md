@@ -112,3 +112,24 @@
    - Créons l'image `sudo docker build -t="votre_nom/apache" .` Attention à ne pas oublier le point à la fin de la commande qui indique que le fichier Dockerfile est dans le répertoire local. Le nom du container est nécessairement votre_nom/apache et non apache car apache serait interprété comme un répertoire officiel
 
    - Listez vos images : `docker images`
+
+## 5. Faire tourner des applications avec Docker
+1. Jusqu'à présent, nous avons fait tourné des containers ubuntu en mode interactif. C'est intéressant, mais dans un contexte de production où un opérateur veut démarrer beaucoup de container sur une machine, on veut démarrer les containers en mode demon, c'est-à-dire en tâche de fond. Cela se fait simplement avec l'option `-d`.
+
+- Commençons par un simple `docker run -d --name=demon ubuntu /bin/bash`. Que se passe-t-il ? `cree un process demon avec l'image ubuntu`
+- Faites un `docker ps` et `docker ps -a` pour comprendre.`le process est arrêté apres son lancement`
+- Détruisez le container précédent. `docker rm demon`
+- Nous allons corriger le problème précédent en faisant quelque chose dans le container : `docker run -d --name=demon ubuntu /bin/sh -c "while true ; do echo hello world ; sleep 1 ; done"`
+- Montrez ce qui se passe dans le container depuis la machine hôte puis détruisez le container. `docker logs demon` => `beaucoup de hello world`
+2. Démarrez un container `votre_nom/apache` en mode demon en exposant le port 80 : `docker run -d -p 80 --name=apache mondotosz/apache`
+
+3. La dernière commande du fichier Dockerfile précédent permet d'exposer un port interne du container (le port 80 du serveur apache) depuis l'hôte debian. Pour trouver quel est le port choisi par Docker, il suffit de taper `docker port apache 80`. Faites un test en ouvrant votre navigateur (lynx) et vous connectant sur la machine locale (l'hôte debian) sur le port docker.
+
+4. On peut mieux contrôler le port choisi. Si par exemple on veut que cela soit le port 80, il suffit de modifier la commande précédente : `docker run -d -p 80:80 --name=apache mondotosz/apache`. Stoppez, détruisez et recréez votre container pour vérifier que cela fonctionne.
+
+5. On veut maintenant en plus contrôler le contenu du serveur Web depuis l'hôte debian. Pour cela on va :
+
+- créer un répertoire `mkdir website` dans le répertoire Apache créer précédemment
+- mettre dans ce répertoire un fichier `index.html` avec le contenu suivant : `<html> Hello world </html>`
+- Démarrer votre container en montant le répertoire apache là où le serveur Apache dans le container va chercher ses données : `docker run -d -p 80:80 -v ~/Docker/Apache/website:/var/www/html --name=apache mondotosz/apache`
+- Vérifiez que le container offre le service attendu.
