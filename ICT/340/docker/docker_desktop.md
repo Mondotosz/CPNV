@@ -42,7 +42,7 @@ SID : xe (Identifiant de base oracle par défaut pour Oracle Express)
 
 ```
 sudo docker pull mcr.microsoft.com/mssql/server
-sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Pa\$\$w0rd" -p 1433:1433 -d mcr.microsoft.com/mssql/server
+sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Pa\$\$w0rd" -p 1433:1433 -d --name=mssql mcr.microsoft.com/mssql/server
 ```
 
 Contrôle de fonctionnement du container et de la connexion à partir SQL Server Management Studio (SSMS) depuis la machine locale. [4 pts.]
