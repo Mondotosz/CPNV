@@ -28,12 +28,10 @@ secure_apache() {
 
 }
 
-read -p "Update system ? (Y/n) :" yn
-if ((-z $yn || $yn == "y" || $yn == "Y")); then
+if read -p "Update system? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
     update_os
 fi
 
-read -p "Secure apache ? (Y/n) :" yn
-if  ((-z $yn || $yn == "y" || $yn == "Y")); then
+if  read -p "Secure apache? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
     secure_apache
 fi
