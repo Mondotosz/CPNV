@@ -20,6 +20,10 @@ main() {
     if read -p "Secure php code? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
         secure_php_code
     fi
+
+    if read -p "Secure network ? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+        secure_network
+    fi
 }
 
 update_os() {
