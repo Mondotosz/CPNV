@@ -16,6 +16,10 @@ main() {
     if read -p "Secure mysql? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
         secure_mysql
     fi
+
+    if read -p "Secure php code? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+        secure_php_code
+    fi
 }
 
 update_os() {
@@ -27,8 +31,8 @@ update_os() {
     echo "sources updated"
 
     echo "running update"
-    yes | apt-get update > /dev/null
-    yes | apt-get upgrade > /dev/null
+    yes | apt-get update >/dev/null
+    yes | apt-get upgrade >/dev/null
     echo "finished update"
 
     echo "Current Version : $(cat /etc/debian_version)"
@@ -41,7 +45,7 @@ secure_apache() {
     echo "Fixed permissions for uploads"
 
     sed -i 's/Options Indexes FollowSymLinks MultiViews/Options FollowSymLinks MultiViews/' /etc/apache2/sites-available/default
-    service apache2 restart > /dev/null
+    service apache2 restart >/dev/null
     echo "Removed directory indexing"
 
 }
@@ -51,7 +55,7 @@ secure_php() {
 
     sed -E -i "s/(error_reporting = E_ALL & ~E_DEPRECATED)/;\1/" /etc/php5/apache2/php.ini
     sed -E -i "s/(display_errors = )On/;\1Off/" /etc/php5/apache2/php.ini
-    service apache2 restart > /dev/null
+    service apache2 restart >/dev/null
     echo "Hid error messages"
 
     sed -E -i "s/(disable_functions =)/\1 exec,system,shell_exec/" /etc/php5/apache2/php.ini
@@ -65,6 +69,32 @@ secure_mysql() {
     read -p "New photoblog admin password : " pbPassword
     mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$dbPassword'); SET PASSWORD FOR 'root'@'bob' = PASSWORD('$dbPassword'); SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('$dbPassword');USE photoblog;UPDATE users SET password = MD5('$pbPassword') WHERE login LIKE 'admin';"
     echo "updated passwords"
+}
+
+secure_php_code() {
+    echo "Securing php code"
+    sed -i -E "s/(echo mysql_error\(\))/\/\/\1/g;" /var/www/classes/picture.php
+    sed -i -E "s/(echo mysql_error\(\))/\/\/\1/g;" /var/www/classes/user.php
+
+    sed -i '14i$cat = (int) $cat;' /var/www/classes/picture.php
+}
+
+secure_network(){
+    echo "Securing network"
+    iptables -F
+    iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT;
+    iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT;
+    iptables -I INPUT -p tcp --dport 22 -j ACCEPT;
+    iptables -I INPUT -p tcp --dport 80 -j ACCEPT;
+    iptables -I OUTPUT -p tcp --dport 80 -j ACCEPT;
+    iptables -I OUTPUT -p tcp --dport 443 -j ACCEPT;
+    iptables -I OUTPUT -p tcp --dport 53 -j ACCEPT;
+    iptables -I OUTPUT -p udp --dport 53 -j ACCEPT;
+    iptables -P INPUT DROP;
+    iptables -P OUTPUT DROP;
+    iptables -P FORWARD DROP;
+
+    yes | apt-get install fail2ban > /dev/null
 }
 
 main
