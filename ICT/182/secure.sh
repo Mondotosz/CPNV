@@ -36,7 +36,7 @@ update_os() {
 
     echo "running update"
     yes | apt-get update >/dev/null
-    yes | apt-get upgrade >/dev/null
+    yes | apt-get upgrade
     echo "finished update"
 
     echo "Current Version : $(cat /etc/debian_version)"
@@ -59,10 +59,10 @@ secure_php() {
 
     sed -E -i "s/(error_reporting = E_ALL & ~E_DEPRECATED)/;\1/" /etc/php5/apache2/php.ini
     sed -E -i "s/(display_errors = )On/;\1Off/" /etc/php5/apache2/php.ini
-    service apache2 restart >/dev/null
     echo "Hid error messages"
 
     sed -E -i "s/(disable_functions =)/\1 exec,system,shell_exec/" /etc/php5/apache2/php.ini
+    service apache2 restart >/dev/null
     echo "Disabled system functions"
 }
 
